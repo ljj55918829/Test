@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>动态渲染</title>
+    <style>
+        *{margin: 0;padding:0;}
+        .box{width: 100%;height: 160px;background:gray  ;margin-bottom: 30px;}
+        .box img{width: 50%;height: 50%;display: block;margin-top:20px;}
+    </style>
+</head>
+<body>
+<div class="content">
+
+</div>
+</body>
+</html>
+<script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+<script>
+    var data=[
+        {tit:'融泽财富',url:'img/1.png',msg:'这小子预断难断这故事'},
+        {tit:'提款钱包',url:'img/6.jpg',msg:'全为我爱上你偏偏你不知'},
+        {tit:'1111',url:'img/act.jpg',msg:'人人开开心心说说故事'},
+    ]
+    // alert(data[1].url)
+    for(let i=0;i<data.length;i++){
+        $('.content').append(
+            `<div class="box">
+            <div class="tit">${data[i].tit}</div>
+            <img src="${data[i].url}" alt="" class="pic">
+            <p class="msg">${data[i].msg}</p>
+            </div>
+        `
+        )
+    }
+</script>

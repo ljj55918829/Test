@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>购物页面</title>
+    <style>
+        body{background: antiquewhite;}
+        ul{list-style:none;padding:0;margin:0 auto;width: 80%;background: white;}
+        .goods li{display:inline-block;border:1px solid #ddd;padding:10px;margin:10px;}
+        .goods li:hover{background: green;}
+        .goods .price{color:#f00;font-weight:bold;}
+        .goods .price::before{content:"￥";}
+        img{display: block;width: 220px;height: 220px;}
+        .goPay{display: block;width: 200px;height: 60px;text-align: center;line-height: 60px;margin: 0 auto;background: #25ae84;    }
+    </style>
+</head>
+<body>
+<ul class="goods">
+
+</ul>
+<a href="cookieReady.html" rel="external nofollow" class="goPay">去结算</a>
+</body>
+</html>
+    <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script>
+        window.onload = function(){
+            var goods = document.getElementsByClassName('goods')[0];
+
+// 用于保存购物车商品信息
+            var carList = [];
+
+// 先获取当前cookie
+            var cookies = document.cookie.split('; ');
+            for(var i=0;i<cookies.length;i++){
+                var arr = cookies[i].split('=');
+                if(arr[0] === 'carlist'){
+                    carList = JSON.parse(arr[1]);
+                }
+            }
+
+// 事件委托
+            goods.onclick = function(e){
+                e = e || window.event;
+                var target = e.target || e.srcElement;
+
+// 添加到购物车
+                if(target.tagName.toLowerCase() === 'button'){
+                    alert('已成功添加至购物车')
+// 获取当前li
+                    var currentLi = target.parentElement.parentElement;
+                    var children = currentLi.children;
+                    var currentGUID = currentLi.getAttribute('data-guid');
+
+// 先创建一个对象保存当前商品信息
+                    var goodsObj = {};
+                    goodsObj.guid = currentGUID;
+                    goodsObj.qty = 1;
+                    goodsObj.name = children[1].innerHTML;
+                    goodsObj.price = children[2].innerHTML;
+                    goodsObj.imgUrl = children[0].src;
+
+// 如果cookie为空，则直接添加
+                    if(carList.length===0){
+// 添加到carList
+                        carList.push(goodsObj);
+                    }else{
+// 先判断cookie中有无相同的guid商品
+                        for(var i=0;i<carList.length;i++){
+// 如果商品已经存在cookie中，则数量+1
+                            if(carList[i].guid === currentGUID){
+                                carList[i].qty++;
+                                break;
+                            }
+                        }
+
+// 如果原cookie中没有当前商品
+                        if(i===carList.length){
+// 添加到carList
+                            carList.push(goodsObj);
+                        }
+
+                    }
+// 存入cookie
+// 把对象/数组转换诚json字符串：JSON.stringify()
+                    document.cookie = 'carlist=' + JSON.stringify(carList);
+                }
+
+            }
+
+//动态创建html标签
+            let goodsList=[
+                {guid:'g01',imgUrl:'img/shirt_1.jpg',goodName:'军绿衬衣',price:'98.88',},
+                {guid:'g02',imgUrl:'img/shirt_2.jpg',goodName:'格子衬衣（程序员必备衬衣）',price:'88.88',},
+                {guid:'g03',imgUrl:'img/shirt_3.jpg',goodName:'古风衬衣',price:'9.98',},
+                {guid:'g04',imgUrl:'img/shirt_4.jpg',goodName:'黑色衬衣',price:'8.88',},
+                {guid:'g05',imgUrl:'img/b5g.jpg',goodName:'放松一下',price:'0.00',},
+            ]
+            for(let i=0;i<goodsList.length;i++){
+                $('.goods').append(
+                    `
+                    <li data-guid="${goodsList[i].guid}">
+                        <img src="${goodsList[i].imgUrl}">
+                        <p>${goodsList[i].goodName}</p>
+                        <p class="price">${goodsList[i].price}</p>
+                        <div class="add2cart">
+                            <button>添加到购物车</button>
+                        </div>
+                    </li>
+                `
+                )
+            }
+        }
+    </script>
